@@ -1,0 +1,43 @@
+{
+  "builders": [
+    {
+      "type": "qemu",
+      "name": "centos-6-x86_64",
+      "vm_name": "centos-6-x86_64",
+      "accelerator": "kvm",
+      "disk_size": 2048,
+      "format": "qcow2",
+      "headless": true,
+      "http_directory": "http",
+      "iso_checksum": "eb3c8be6ab668e6d83a118323a789e6c",
+      "iso_checksum_type": "md5",
+      "iso_url": "http://91.121.125.139/ftp.centos.org/6.6/isos/x86_64/CentOS-6.6-x86_64-minimal.iso",
+      "shutdown_command": "echo '/sbin/halt -h -p' > shutdown.sh; sh 'shutdown.sh'",
+      "ssh_password": "admin",
+      "ssh_port": 22,
+      "ssh_username": "root",
+      "ssh_wait_timeout": "10000s",
+      "qemuargs": [ [ "-m", "1024m" ] ],
+      "boot_wait": "10s",
+      "boot_command": [
+        "<tab> text ks=http://10.10.0.11:8081/centos6-x84_64.cfg<enter><wait>"
+      ]
+    }
+  ],
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "scripts/common.sh",
+      "destination": "/tmp/common.sh"
+    },
+    {
+      "type": "shell",
+      "scripts": [
+        "scripts/openstack.sh",
+        "scripts/cleanup.sh",
+        "scripts/zerodisk.sh"
+      ],
+        "execute_command": "sh '{{.Path}}'"
+    }
+  ]
+}
